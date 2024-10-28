@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: dynamodb
+    ports:
+      - "8000:8000"
+    volumes:
+      - dynamodb_data:/home/dynamodblocal  # Persists data between runs
+    command: ["-jar", "DynamoDBLocal.jar", "-sharedDb"]
+
+  app:
+    build: .
+    container_name: space_job_finder
+    environment:
+      - AWS_ACCESS_KEY_ID=mock
+      - AWS_SECRET_ACCESS_KEY=mock
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+      - AWS_REGION=us-east-1
+    depends_on:
+      - dynamodb
+    ports:
+      - "5000:5000"  # Example port, adjust based on your app's port
+
+volumes:
+  dynamodb_data:
