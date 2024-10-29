@@ -40,7 +40,7 @@ def get_link(opportunity_element):
     anchors = opportunity_element.select(JOB_TITLE_SELECTOR)
     if len(anchors) > 0:
         link = anchors[0].get('href')
-        return f'https://recruiting2.ultipro.com${link}'
+        return f'https://recruiting2.ultipro.com{link}'
     else:
         return None
 

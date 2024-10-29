@@ -1,6 +1,8 @@
 # Use a Python base image
 FROM python:3.9-slim
 
+ENV PYTHONIOENCODING=utf-8
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     wget \

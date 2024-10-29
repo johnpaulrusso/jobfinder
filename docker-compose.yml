@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   dynamodb:
     image: amazon/dynamodb-local
@@ -18,10 +16,24 @@ services:
       - AWS_SECRET_ACCESS_KEY=mock
       - DYNAMODB_ENDPOINT=http://dynamodb:8000
       - AWS_REGION=us-east-1
+      - ENV=development 
     depends_on:
       - dynamodb
     ports:
       - "5000:5000"  # Example port, adjust based on your app's port
+    secrets:
+      - email_user
+      - email_password
+      - email_recipient
 
 volumes:
   dynamodb_data:
+
+
+secrets:
+  email_user:
+    file: ./email_user.secret
+  email_password:
+    file: ./email_password.secret
+  email_recipient:
+    file: ./email_recipient.secret
