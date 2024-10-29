@@ -2,13 +2,16 @@ import boto3
 import os
 
 # Initialize the DynamoDB resource
-dynamodb = boto3.resource(
-    'dynamodb',
-    endpoint_url=os.getenv('DYNAMODB_ENDPOINT', 'http://localhost:8000'),
-    region_name=os.getenv('AWS_REGION', 'us-east-2'),
-    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID', 'mock_access_key'),
-    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY', 'mock_secret_key')
-)
+if os.getenv("ENV") == "production":
+    dynamodb = boto3.resource("dynamodb")
+else:
+    dynamodb = boto3.resource(
+        'dynamodb',
+        endpoint_url=os.getenv('DYNAMODB_ENDPOINT', 'http://localhost:8000'),
+        region_name=os.getenv('AWS_REGION', 'us-east-2'),
+        aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID', 'mock_access_key'),
+        aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY', 'mock_secret_key')
+    )
 
 def create_jobs_table():
     """

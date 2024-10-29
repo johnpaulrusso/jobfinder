@@ -2,13 +2,26 @@ import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import boto3
+from botocore.exceptions import ClientError
+
 
 def load_secret(secret_name, default=None):
     """Helper function to load secrets based on the environment"""
     environment = os.getenv("ENV", "development")
     if environment == "production":
-        # In production, assume AWS injects secrets as environment variables
-        return os.getenv(secret_name, default)
+        # In development, use AWS secrets manager.
+        aws_secret_name=f"jobfinder/{secret_name}"
+        client = boto3.client("secretsmanager")
+        try:
+            get_secret_value_response = client.get_secret_value(
+                SecretId=aws_secret_name
+            )
+        except ClientError as e:
+            raise e
+    
+        secret = get_secret_value_response['SecretString']
+        return secret
     else:
         # In development, use Docker secrets mounted as files
         try:
